@@ -27,5 +27,5 @@ res = pd.DataFrame()
 for name in names:
     part = df[df.name == name]
     res = res.append(part.sample(n=4))
-res = res.append(df.sample(n=60))
+res = res.append(df.sample(n=20))
 res.to_json('sintomi.json', orient='index')

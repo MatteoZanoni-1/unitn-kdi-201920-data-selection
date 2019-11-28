@@ -11,8 +11,8 @@ for elem in sintomi:
     df.set_index('id', inplace=True)
     df.name = df.name.str.lower()
     if not df.empty:
-        if len(df) > 6:
-            res = res.append(df.sample(n=6))
+        if len(df) > 100:
+            res = res.append(df.sample(n=100))
         else:
             res = res.append(df)
 res = res.reset_index().drop_duplicates(
