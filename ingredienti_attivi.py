@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 import pandas as pd
 
-sintomi = pd.read_json('sintomi.json', orient='index').cured_by.tolist()
+sintomi = pd.read_json('sintomi.json', orient='records').cured_by.tolist()
 
 engine = create_engine('postgresql://localhost:5432/prova')
 res = pd.DataFrame()
@@ -12,10 +12,11 @@ for elem in sintomi:
     df.name = df.name.str.lower()
     if not df.empty:
         if len(df) > 100:
-            res = res.append(df.sample(n=100))
+            res = res.append(df.sample(n=100, random_state=1))
         else:
             res = res.append(df)
 res = res.reset_index().drop_duplicates(
     subset='id', keep='first').set_index('id')
 
-res.to_json('ingredienti_attivi.json', orient='index')
+res.reset_index(inplace=True)
+res.to_json('ingredienti_attivi.json', orient='records')

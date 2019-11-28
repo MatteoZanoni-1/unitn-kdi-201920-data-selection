@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 import pandas as pd
 
 
-ingredienti = pd.read_json('ingredienti_attivi.json', orient='index')
+ingredienti = pd.read_json('ingredienti_attivi.json', orient='records')
 ingredienti = ingredienti['product'].drop_duplicates().tolist()
 
 engine = create_engine('postgresql://localhost:5432/prova')
@@ -16,7 +16,8 @@ for ing in ingredienti:
 ing_att.name = ing_att.name.str.lower()
 ing_att = ing_att.reset_index().drop_duplicates(
     subset='id', keep='first').set_index('id')
-ing_att.to_json('ingredienti_attivi.json', orient='index')
+ing_att.reset_index(inplace=True)
+ing_att.to_json('ingredienti_attivi.json', orient='records')
 
 
 ingredienti = ing_att['product'].tolist()
@@ -30,4 +31,6 @@ for elem in ingredienti:
 res.name = res.name.str.lower()
 res = res.reset_index().drop_duplicates(
     subset='id', keep='first').set_index('id')
-res.to_json('prodotti.json', orient='index')
+
+res.reset_index(inplace=True)
+res.to_json('prodotti.json', orient='records')

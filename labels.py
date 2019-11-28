@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 import pandas as pd
 
 
-prodotti = pd.read_json('prodotti.json', orient='index').index.tolist()
+prodotti = pd.read_json('prodotti.json', orient='records')['id'].tolist()
 
 engine = create_engine('postgresql://localhost:5432/prova')
 
@@ -19,4 +19,6 @@ labels.rename(columns={'product_code': 'product'}, inplace=True)
 labels.category = labels.category.str.lower()
 labels.title = labels.title.str.lower()
 labels = labels.drop_duplicates(subset='id', keep='first').set_index('id')
-labels.to_json('labels.json', orient='index')
+
+labels.reset_index(inplace=True)
+labels.to_json('labels.json', orient='records')
